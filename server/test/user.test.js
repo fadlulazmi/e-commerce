@@ -38,7 +38,7 @@ describe('User', function(){
                 chai
                  .request(app)
                  .post('/user/register')
-                 .send({ username : 'fadlul', email : 'fadlul@mail.com', password : '1234', role : 'admin'})
+                 .send({ username : 'fadlulazmi', email : 'fadlulazmi@mail.com', password : '1234', role : 'admin'})
                  .then(result => {
     
                     expect(result).to.have.status(400)

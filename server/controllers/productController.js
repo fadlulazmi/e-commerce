@@ -1,18 +1,21 @@
 const Product = require('../models/product')
-
+// console.log('control prods')
 class ProductController {
     static create(req, res){
+        console.log('create controller', req);
         Product.create({
             itemName : req.body.itemName,
             stock : req.body.stock,
             price : req.body.price,
-            img : req.body.img,
+            img : req.file.cloudStoragePublicUrl,
+            description : req.body.description
         })
             .then(product => {
+                console.log('berhasil', product)
                 res.status(201).json(product)
             })
             .catch(err => {
-                console.log(err)
+                console.log('ini error', err)
                 res.status(500).json(err)
             })
     }
@@ -42,11 +45,14 @@ class ProductController {
 
     static update(req, res){
         let obj = {}
-        let {itemName, stock, price, img} = req.body
+        let {itemName, stock, price, description} = req.body
+        let img = req.file.cloudStoragePublicUrl
+
         if(itemName) obj.itemName = itemName
         if(stock) obj.stock = stock
         if(price) obj.price = price
         if(img) obj.img = img
+        if(description) obj.description = description
 
         Product.findByIdAndUpdate(req.params.id, obj)
             .then(update => {
