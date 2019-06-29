@@ -41,7 +41,7 @@
                 <a class="button" style="background:none; border:none; font-size:22px">
                   <router-link to="/cart" style="color:white">
                     <i class="fas fa-shopping-basket"></i>
-                    <a class="button is-small is-warning" style="border-radius:50%; font-size:9px; text-align:center"><b>3</b></a>
+                    <a class="button is-small is-warning" style="border-radius:50%; font-size:9px; text-align:center"><b>{{userCart.length}}</b></a>
                   </router-link>
                 </a>
                 <a v-if="isLogin" class="button is-warning" style="background:none; border:1px white solid; font-size:16px">
@@ -111,7 +111,6 @@
           </div>
         </div>
       </nav>
-
     <router-view/>
   </div>
 </template>
@@ -140,7 +139,7 @@ export default {
     
   },
   computed : {
-    ...mapState(['isLogin']),
+    ...mapState(['isLogin', 'userCart']),
     
   },
   methods : {
@@ -154,6 +153,9 @@ export default {
       this.$store.dispatch('register', this.userRegis)
     }
   },
+  created(){
+    this.$store.dispatch('getUserCart', localStorage.getItem('userId'))
+  }
   
   
 }

@@ -12,12 +12,11 @@
       </div>
     </section>
     <!-- cart -->
-    <br>
-    <div class="container" style="background-color:rgba(189, 86, 86, 0.1)">
+    <div v-for="cart in userCart" :key="cart._id" class="container" style="background-color:rgba(189, 86, 86, 0.1); margin-top:15px">
       <div class="columns">
         <div class="column is-one-quarter" style="height:150px">
           <img
-            src="https://id-test-11.slatic.net/original/9064216bbd926944ee275d20a2ea91f1.jpg"
+            :src="cart.productId.img"
             alt="image"
             style="height : 100%; border:3px solid rgba(189, 86, 86, 0.7); border-radius:20%"
           >
@@ -26,76 +25,16 @@
           <p>
             <small>
               <br>
-              <b>Name :</b>Sepatu
+              <b>Name :</b> {{cart.productId.itemName}}
               <br>
-              <b>Amount :</b>1
+              <b>Amount :</b> {{cart.amount}}
               <br>
               <b>Price :</b>
-              <b style="color:rgba(189, 86, 86, 1)">Rp. 250.000</b>
+              <b style="color:rgba(189, 86, 86, 1)">Rp. {{cart.productId.price*cart.amount}}</b>
             </small>
           </p>
           <div style="text-align:right; margin-right:50px">
-            <a class="button is-small is-danger">
-              <b>DELETE</b>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="container" style="background-color:rgba(189, 86, 86, 0.1)">
-      <div class="columns">
-        <div class="column is-one-quarter" style="height:150px">
-          <img
-            src="https://id-test-11.slatic.net/original/9064216bbd926944ee275d20a2ea91f1.jpg"
-            alt="image"
-            style="height : 100%; border:3px solid rgba(189, 86, 86, 0.7); border-radius:20%"
-          >
-        </div>
-        <div class="column" style="text-align:left">
-          <p>
-            <small>
-              <br>
-              <b>Name :</b>Sepatu
-              <br>
-              <b>Amount :</b>1
-              <br>
-              <b>Price :</b>
-              <b style="color:rgba(189, 86, 86, 1)">Rp. 250.000</b>
-            </small>
-          </p>
-          <div style="text-align:right; margin-right:50px">
-            <a class="button is-small is-danger">
-              <b>DELETE</b>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="container" style="background-color:rgba(189, 86, 86, 0.1)">
-      <div class="columns">
-        <div class="column is-one-quarter" style="height:150px">
-          <img
-            src="https://id-test-11.slatic.net/original/9064216bbd926944ee275d20a2ea91f1.jpg"
-            alt="image"
-            style="height : 100%; border:3px solid rgba(189, 86, 86, 0.7); border-radius:20%"
-          >
-        </div>
-        <div class="column" style="text-align:left">
-          <p>
-            <small>
-              <br>
-              <b>Name :</b>Sepatu
-              <br>
-              <b>Amount :</b>1
-              <br>
-              <b>Price :</b>
-              <b style="color:rgba(189, 86, 86, 1)">Rp. 250.000</b>
-            </small>
-          </p>
-          <div style="text-align:right; margin-right:50px">
-            <a class="button is-small is-danger">
+            <a @click="deleteFromCart(cart._id)" class="button is-small is-danger">
               <b>DELETE</b>
             </a>
           </div>
@@ -111,7 +50,7 @@
           <p style="border-top:2px dotted black; margin-right:30px; margin-left:30px">
             <br>
             <b>Total : </b>
-            <b style="color:rgba(189, 86, 86, 1)"> Rp. 750.000</b>
+            <b style="color:rgba(189, 86, 86, 1)"> Rp. {{totalPaymentCount}}</b>
             <br>
             <a class="button is-small is-success" style="width:150px">
               <b>PAY NOW</b>
@@ -131,7 +70,34 @@
 </template>
 
 <script>
-export default {};
+
+import {mapState} from 'vuex'
+
+export default {
+  data(){
+    return {
+      totalPayment : 0
+    }
+  },
+  methods : {
+    deleteFromCart(input){
+      this.$store.dispatch('deleteCart', input)
+    }
+  },
+  computed : {
+    ...mapState(['userCart']),
+    totalPaymentCount(){
+      this.userCart.forEach(element => {
+        this.totalPayment += (element.productId.price*element.amount)
+      });
+      return this.totalPayment
+    }
+
+  },
+  created(){
+    // this.$store.dispatch('getUserCart', localStorage.getItem('userId'))
+  }
+};
 </script>
 
 <style>

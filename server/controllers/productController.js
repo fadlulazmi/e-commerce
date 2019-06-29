@@ -46,7 +46,13 @@ class ProductController {
     static update(req, res){
         let obj = {}
         let {itemName, stock, price, description} = req.body
-        let img = req.file.cloudStoragePublicUrl
+        let img = null
+        if(req.file){
+          if(req.file.cloudStoragePublicUrl){
+            img = req.file.cloudStoragePublicUrl
+          }
+        } 
+        
 
         if(itemName) obj.itemName = itemName
         if(stock) obj.stock = stock

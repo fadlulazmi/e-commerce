@@ -10,12 +10,8 @@ export default new Vuex.Store({
   state: {
     data : [],
     detail : [],
+    userCart : [],
     isLogin : localStorage.getItem('access_token') ? true : false,
-    user : {
-      _id : '',
-      email : '',
-      username : ''
-    }
   },
   mutations: {
     allProducts(state, payload){
@@ -27,8 +23,12 @@ export default new Vuex.Store({
       state.detail = payload
     },
     updateIsLogin(state, payload){
-      state.isLogin = payload[2]
-      state.user = payload[1]
+      
+      state.isLogin = payload[0]
+      
+    },
+    userCart(state, payload){
+      state.userCart = payload
     }
   },
   actions: {
@@ -67,6 +67,7 @@ export default new Vuex.Store({
         .then(({data}) => {
           console.log(data)
           localStorage.setItem('access_token', data.access_token)
+          localStorage.setItem('userId', data.user._id)
           context.commit('updateIsLogin', [true, data.user])
         })
         .catch(err => {
@@ -88,7 +89,70 @@ export default new Vuex.Store({
     },
     logout(context, payload){
       localStorage.clear()
-      context.commit('updateIsLogin', false)
+      context.commit('updateIsLogin', [false, null])
+    },
+    addToCart(context, payload){
+      console.log(JSON.stringify(payload), 'payloaaaaaaaaaaaaad')
+      ax({
+        url : '/carts',
+        method : 'POST',
+        data : {
+          productId : payload.item._id,
+          amount : payload.amount,
+          paymentStatus : false,
+        }
+      })
+        .then(({data}) => {
+          console.log('===========================')
+          context.dispatch('updateProduct', [data, payload.item.stock])
+        })
+        .catch(err => {
+          // console.log(err);
+          console.log(JSON.stringify(err, null, 2))
+        })
+    },
+    updateProduct(context, payload){
+      console.log(payload, 'updaeprdct')
+      ax({
+        url : `/products/${payload[0].productId}`,
+        method : 'PUT',
+        data : {
+          amount : (payload[1] - payload[0].amount)
+        }
+      })
+        .then(({data}) => {
+          router.push('/')
+          console.log(data)
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    },
+    getUserCart(context, payload){
+      console.log(payload)
+      ax({
+        url : `/carts/${payload}`,
+        method : 'GET'
+      })
+        .then(({data}) => {
+          console.log(JSON.stringify(data), 'getusercart')
+          context.commit('userCart', data)
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    },
+    deleteCart(context, payload){
+      ax({
+        url : `/carts/${payload}`,
+        method: 'DELETE'
+      })
+        .then(({data}) => {
+          context.dispatch('getUserCart', localStorage.getItem('userId'))
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
   }

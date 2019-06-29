@@ -20,7 +20,11 @@ class UserController {
                                 username : user.username,
                                 email : user.email
                             })
-                            res.status(200).json({ access_token : token, user})
+                            res.status(200).json({ access_token : token, user : {
+                                _id : user._id,
+                                username : user.username,
+                                email : user.email
+                            }})
                         } else {
                             res.status(404).json({ message : 'username / password wrong'})
                         }

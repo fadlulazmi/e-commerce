@@ -2,11 +2,13 @@ const Cart = require('../models/cart')
 
 class CartController {
     static create(req, res){
-        let { productId, delivStatus } = req.body
+        console.log(req.body)
+        
         Cart.create({
             userId : req.loggedUser.id,
-            productId,
-            delivStatus
+            productId : req.body.productId,
+            amount: req.body.amount,
+            paymentStatus : req.body.paymentStatus
         })
             .then(cart => {
                 res.status(201).json(cart)
@@ -37,6 +39,19 @@ class CartController {
             })
             .catch(err => {
                 console.log(err)
+                res.status(500).json(err)
+            })
+    }
+
+    static update(req, res){
+        Cart.findByIdAndUpdate(req.params.id, {
+            amount : req.body.amount
+        })
+            .then(data => {
+                res.json({msg : 'updated'})
+            })
+            .catch(err => {
+                console.log(err);
                 res.status(500).json(err)
             })
     }

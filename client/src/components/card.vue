@@ -1,11 +1,11 @@
 <template>
   <div>
     
-    <div class="card" style="">
+    <div class="card" style="border:1px solid pink">
       <div class="card-image" style="border-bottom:2px solid #FF2B56">
         <figure class="image">
           <!-- product image -->
-          <img :src="item.img">
+          <img :src="item.img" style="margin-bottom:25px">
         </figure>
       </div>
       
@@ -15,12 +15,12 @@
         <div class="media">
           <!-- product name -->
           <a style="color:black" @click="details(item._id)"><b>{{item.itemName.toUpperCase()}}</b></a>
-          <br>
-          <div style="margin-left : 75px">
-            <!-- price -->
-            <b><small style="color:#FF2B56; text-align: right">Rp {{item.price}}</small></b> 
-          </div>
+          <br>      
+            
+          
         </div>
+        <b><small style="color:#FF2B56; text-align: left">Rp {{item.price}}</small></b> 
+        <!-- price -->
 
         <div class="content" style="text-align : left; font-size : 14px">
           <!-- description -->

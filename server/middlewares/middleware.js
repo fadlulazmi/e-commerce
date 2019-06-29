@@ -11,11 +11,17 @@ module.exports = {
             User.findById(decoded.id)
                 .then(user => {
                     if(user){
+                        console.log(user, 'userrrrrrrrrrrrrrr')
                         req.loggedUser = decoded
                         next()
                     } else {
                         res.status(401).json({message : 'not authorized'})
                     }
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                    // throw new Error(err)
                 })
         } catch (err) {
             res.status(500).json(err)
